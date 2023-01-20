@@ -25,6 +25,7 @@ hs_err_pid*
 # MacOS
 .DS_Store
 
-# Project files
+# Project files and artifacts
 *.iml
 target/
+.idea/
