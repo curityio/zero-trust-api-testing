@@ -12,10 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */package se.curity.examples.spark;
+ */package se.curity.examples.spark.unittests;
 
 import org.junit.jupiter.api.Test;
 import se.curity.examples.products.Product;
+import se.curity.examples.spark.ListProductsRequestHandler;
+import se.curity.examples.spark.mock.MockProductServiceImpl;
 
 import javax.json.Json;
 import javax.json.JsonArray;

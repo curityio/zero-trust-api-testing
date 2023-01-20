@@ -1,4 +1,4 @@
-package se.curity.examples.spark;
+package se.curity.examples.spark.mock;
 
 import org.jose4j.jwk.JsonWebKeySet;
 import org.jose4j.jwk.RsaJsonWebKey;
@@ -28,14 +28,6 @@ public class MockJwtIssuer {
         DEFAULT_ISSUER = issuer;
     }
 
-    public String getDefaultIssuer() {
-        return DEFAULT_ISSUER;
-    }
-
-    public String getKeyId() {
-        return SIGNING_KEY.getKeyId();
-    }
-
     /**
      * Create new RSA key with the given kid for signing.
      * @param kid key id of the json web key (JWK)
@@ -52,7 +44,7 @@ public class MockJwtIssuer {
         }
     }
 
-    protected String getJwt(String subjectName, Map<String, String> claims, String audience) {
+    public String getJwt(String subjectName, Map<String, String> claims, String audience) {
         return getJwt(subjectName, claims, DEFAULT_ISSUER, audience);
     }
 
@@ -64,7 +56,7 @@ public class MockJwtIssuer {
      * @param audience name of the audience (value of 'aud' claim)
      * @return String representation of a JWT as defined in RFC 7915
      */
-    protected String getJwt(String subjectName, Map<String, String> claims, String issuer, String audience) {
+    public String getJwt(String subjectName, Map<String, String> claims, String issuer, String audience) {
         // Create the Claims, which will be the content of the JWT
         JwtClaims jwtClaims = new JwtClaims();
 
@@ -97,7 +89,7 @@ public class MockJwtIssuer {
         }
     }
 
-    void publishJwks() {
+    public void publishJwks() {
         String jwks = new JsonWebKeySet(SIGNING_KEY).toJson();
         stubFor(get("/jwks").willReturn(ok(jwks)));
     }

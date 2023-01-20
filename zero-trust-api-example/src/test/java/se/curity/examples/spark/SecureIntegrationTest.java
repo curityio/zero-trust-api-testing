@@ -24,6 +24,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import se.curity.examples.products.Product;
+import se.curity.examples.spark.mock.MockJwtIssuer;
+import se.curity.examples.spark.mock.MockProductServiceImpl;
+import se.curity.examples.spark.utils.JsonUtil;
 import spark.Spark;
 
 import javax.annotation.Nullable;

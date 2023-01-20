@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.curity.examples.spark;
+package se.curity.examples.spark.unittests;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import se.curity.examples.spark.ServerOptions;
+import se.curity.examples.spark.SparkServerExample;
 import spark.Spark;
 
 import javax.servlet.ServletException;
