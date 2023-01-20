@@ -1,19 +1,18 @@
 /*
- * Copyright (C) 2016 Curity AB.
- * 
+ * Copyright 2023 Curity AB
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package se.curity.examples.spark;
 
 import javax.servlet.FilterConfig;
@@ -71,19 +70,13 @@ public class EmbeddedSparkJwtFilterConfig implements FilterConfig
         return new EnumerationFromIteration(_params.keySet().iterator());
     }
 
-    public class EnumerationFromIteration implements Enumeration {
+    public static class EnumerationFromIteration implements Enumeration<String> {
 
-        private Iterator iterator;
+        private final Iterator<String> iterator;
 
-        EnumerationFromIteration(Iterator iterator){
+        EnumerationFromIteration(Iterator<String> iterator){
             this.iterator = iterator;
         }
-
-
-        public EnumerationFromIteration(Map map) {
-            iterator = map.keySet().iterator();
-        }
-
 
         @Override
         public boolean hasMoreElements() {
@@ -92,7 +85,7 @@ public class EmbeddedSparkJwtFilterConfig implements FilterConfig
 
 
         @Override
-        public Object nextElement() {
+        public String nextElement() {
             return iterator.next();
         }
 

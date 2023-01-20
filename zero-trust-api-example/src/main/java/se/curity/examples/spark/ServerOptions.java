@@ -1,3 +1,18 @@
+/*
+ * Copyright 2023 Curity AB
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package se.curity.examples.spark;
 
 import javax.annotation.Nullable;
@@ -97,12 +112,13 @@ public class ServerOptions {
     public String getScope() { return scope; }
 
     public void setScope(String scope) { this.scope = scope; }
+
     /**
-     * Default options:
-     * port: 9090
-     * issuer: https://localhost:8443/oauth/v2/oauth-anonymous
-     * audience: client_id
-     * scope: read
+     * Create default options:
+     * port: 9090 <br/>
+     * issuer: https://localhost:8443/oauth/v2/oauth-anonymous <br/>
+     * audience: client_id <br/>
+     * scope: read <br/>
      * jwksurl: https://localhost:8443/oauth/v2/oauth-anonymous/jwks
      */
     public ServerOptions() {
@@ -126,7 +142,7 @@ public class ServerOptions {
      * --scope <Expected scopes in jwt>);
      * @param args an optional list of arguments. If empty or null, default values will be used.
      */
-    public ServerOptions(@Nullable String args[]) {
+    public ServerOptions(@Nullable String[] args) {
         // set default values
         this();
         if (args != null && args.length > 0) {
@@ -144,37 +160,24 @@ public class ServerOptions {
                 }
 
                 switch (argumentName) {
-                    case "--jwksurl": {
+                    case "--jwksurl" -> {
                         try {
                             this.jwksUrl = new URL(argumentValue);
                         } catch (MalformedURLException exception) {
                             throw new IllegalArgumentException(String.format("Invalid value for JWKS URL: %s", exception.getMessage()));
                         }
-                        break;
                     }
-                    case "--issuer": {
-                        this.issuer = argumentValue;
-                        break;
-                    }
-                    case "--port": {
+                    case "--issuer" -> this.issuer = argumentValue;
+                    case "--port" -> {
                         try {
                             this.port = Integer.parseInt(argumentValue);
                         } catch (NumberFormatException exception) {
                             throw new IllegalArgumentException(String.format("Invalid value for port: %s", exception.getMessage()));
                         }
-                        break;
                     }
-                    case "--audience": {
-                        this.audience = argumentValue;
-                        break;
-                    }
-                    case "--scope": {
-                        this.scope = argumentValue;
-                        break;
-                    }
-                    default: {
-                        throw new IllegalArgumentException(String.format("Unknown argument %s. Use [--port <port number of this application>] [--issuer <Expected value of iss claim in JWT>] [--jwksurl <URL to JWKS>] [--audience <Expected aud claim in jwt> [--scope <Expected scopes in jwt>]",argumentName));
-                    }
+                    case "--audience" -> this.audience = argumentValue;
+                    case "--scope" -> this.scope = argumentValue;
+                    default -> throw new IllegalArgumentException(String.format("Unknown argument %s. Use [--port <port number of this application>] [--issuer <Expected value of iss claim in JWT>] [--jwksurl <URL to JWKS>] [--audience <Expected aud claim in jwt> [--scope <Expected scopes in jwt>]", argumentName));
                 }
             }
         }
