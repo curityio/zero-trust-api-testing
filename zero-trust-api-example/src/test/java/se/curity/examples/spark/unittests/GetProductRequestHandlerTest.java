@@ -19,7 +19,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import se.curity.examples.exceptions.AuthorizationException;
 import se.curity.examples.exceptions.NotFoundException;
-import se.curity.examples.spark.GetProductRequestHandler;
+import se.curity.examples.products.GetProductRequestHandler;
 import se.curity.examples.spark.mock.MockProductServiceImpl;
 import spark.Spark;
 

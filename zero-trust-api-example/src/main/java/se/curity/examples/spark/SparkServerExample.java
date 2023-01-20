@@ -19,6 +19,10 @@ import io.curity.oauth.OAuthFilter;
 import io.curity.oauth.OAuthJwtFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.curity.examples.products.GetProductRequestHandler;
+import se.curity.examples.products.ListProductsRequestHandler;
+import se.curity.examples.products.ProductService;
+import se.curity.examples.products.ProductServiceMapImpl;
 import spark.Filter;
 import spark.servlet.SparkApplication;
 

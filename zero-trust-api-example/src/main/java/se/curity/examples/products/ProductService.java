@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.curity.examples.spark;
+package se.curity.examples.products;
 
 import se.curity.examples.products.Product;
 

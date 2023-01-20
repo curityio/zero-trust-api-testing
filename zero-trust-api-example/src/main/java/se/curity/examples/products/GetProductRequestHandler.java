@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.curity.examples.spark;
+package se.curity.examples.products;
 
 import io.curity.oauth.AuthenticatedUser;
 import io.curity.oauth.OAuthFilter;
@@ -22,6 +22,7 @@ import se.curity.examples.exceptions.NotFoundException;
 import spark.Request;
 import spark.Response;
 
+import javax.json.Json;
 import javax.json.JsonObject;
 
 import static spark.Spark.exception;
@@ -41,21 +42,18 @@ public class GetProductRequestHandler extends ProductRequestHandler {
     public Object handle(Request request, Response response) throws Exception {
         exception(AuthorizationException.class, (error, req, resp) -> {
             resp.status(403);
-            resp.body(error.getMessage());
+            resp.body(Json.createObjectBuilder()
+                    .add("error", error.getMessage())
+                    .build()
+                    .toString());
         });
-        exception(NotFoundException.class, (error, req, resp) -> resp.status(404));
+        exception(NotFoundException.class, (error, req, resp) -> {
+            resp.status(404);
+            resp.body("");
+        });
 
         String subscriptionLevel;
         String countryCode;
-        try {
-            subscriptionLevel = ((AuthenticatedUser)request.attribute(OAuthFilter.PRINCIPAL_ATTRIBUTE_NAME))
-                           .getClaims().getString(CLAIM_NAME_SUBSCRIPTION_LEVEL);
-
-        } catch (NullPointerException | ClassCastException invalidClaim) {
-            // Something is wrong with the subscription. Deny access.
-            throw new AuthorizationException("Invalid subscription");
-        }
-
         try {
             countryCode = ((AuthenticatedUser)request.attribute(OAuthFilter.PRINCIPAL_ATTRIBUTE_NAME))
                     .getClaims().getString(CLAIM_NAME_COUNTRY);
@@ -63,6 +61,15 @@ public class GetProductRequestHandler extends ProductRequestHandler {
         } catch (NullPointerException | ClassCastException invalidClaim) {
             // User is not authorized to view any products
             throw new AuthorizationException();
+        }
+
+        try {
+            subscriptionLevel = ((AuthenticatedUser)request.attribute(OAuthFilter.PRINCIPAL_ATTRIBUTE_NAME))
+                           .getClaims().getString(CLAIM_NAME_SUBSCRIPTION_LEVEL);
+
+        } catch (NullPointerException | ClassCastException invalidClaim) {
+            // Something is wrong with the subscription. Deny access.
+            throw new AuthorizationException("Invalid subscription");
         }
 
         return getJsonProduct(countryCode, subscriptionLevel, request.params(":productId"));

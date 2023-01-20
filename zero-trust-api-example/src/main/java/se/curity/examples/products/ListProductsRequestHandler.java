@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.curity.examples.spark;
+package se.curity.examples.products;
 
 import io.curity.oauth.AuthenticatedUser;
 import io.curity.oauth.OAuthFilter;
@@ -24,12 +24,20 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 
+/**
+ * A request handler that returns a list of products
+ */
 public class ListProductsRequestHandler extends ProductRequestHandler {
 
     public ListProductsRequestHandler(ProductService productService) {
         super(productService);
     }
 
+    /**
+     * Get the list of products available in the given country
+     * @param countryCode country code formatted as ISO3166-1 alpha-2
+     * @return the list of products available in the given country or empty list if there are none.
+     */
     public JsonArray getProducts(String countryCode) {
         JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
 
@@ -46,12 +54,13 @@ public class ListProductsRequestHandler extends ProductRequestHandler {
     @Override
     public Object handle(Request request, Response response) {
         try {
+            // Get the country claim from the user principal
             String countryCode = ((AuthenticatedUser)request.attribute(OAuthFilter.PRINCIPAL_ATTRIBUTE_NAME))
                     .getClaims().getString(CLAIM_NAME_COUNTRY);
             return getProducts(countryCode);
-        } catch (NullPointerException npe) {
-            // claim was not found. Return empty list.
-            return JsonArray.EMPTY_JSON_ARRAY;
+        } catch (NullPointerException | ClassCastException exception) {
+            // There's an error with the country claim. Return empty list.
+            return "[]";
         }
     }
 }

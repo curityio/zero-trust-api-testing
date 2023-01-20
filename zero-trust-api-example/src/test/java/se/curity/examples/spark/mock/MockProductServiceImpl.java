@@ -16,7 +16,7 @@
 package se.curity.examples.spark.mock;
 
 import se.curity.examples.products.Product;
-import se.curity.examples.spark.ProductService;
+import se.curity.examples.products.ProductService;
 
 import java.util.Collection;
 import java.util.List;

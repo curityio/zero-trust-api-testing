@@ -16,7 +16,7 @@
 
 import org.junit.jupiter.api.Test;
 import se.curity.examples.products.Product;
-import se.curity.examples.spark.ListProductsRequestHandler;
+import se.curity.examples.products.ListProductsRequestHandler;
 import se.curity.examples.spark.mock.MockProductServiceImpl;
 
 import javax.json.Json;

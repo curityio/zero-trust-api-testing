@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.curity.examples.spark;
-
-import se.curity.examples.products.Product;
+package se.curity.examples.products;
 
 import java.util.Collection;
 import java.util.List;

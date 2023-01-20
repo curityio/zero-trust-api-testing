@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.curity.examples.spark;
+package se.curity.examples.products;
 
 import se.curity.examples.exceptions.AuthorizationException;
 import se.curity.examples.exceptions.NotFoundException;
-import se.curity.examples.products.Product;
 import spark.Route;
 
 import javax.json.Json;
@@ -27,10 +26,19 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+/**
+ * A request handler for common requests of the /products endpoint
+ */
 public abstract class ProductRequestHandler implements Route {
 
+    /**
+     * The service holding the data
+     */
     private final ProductService productService;
 
+    /**
+     * Claim names required for authorization
+     */
     static final String CLAIM_NAME_COUNTRY = "country";
     static final String CLAIM_NAME_SUBSCRIPTION_LEVEL = "subscription_level";
 
@@ -42,10 +50,10 @@ public abstract class ProductRequestHandler implements Route {
      * List the products that are accessible from the current request, aka user.
      *
      * @param countryCode  country code to filter products for
-     * @return A filtered list of products that are available for the user
+     * @return A filtered list of products that are available for the user, may be empty
      */
     protected Collection<Product> filterProducts(String countryCode) {
-        if (!countryCode.isBlank()) {
+        if (!(countryCode == null || countryCode.isBlank())) {
             return productService.getProducts().stream()
                     .filter((product) -> {
                         Collection<String> authorizedCountriesForProduct = product.getAuthorizedCountries();
@@ -64,10 +72,10 @@ public abstract class ProductRequestHandler implements Route {
         }
     }
 
-    protected Product getProduct(String countryCode, String subscriptionLevel, String productId) throws AuthorizationException, NotFoundException {
+    public Product getProduct(String countryCode, String subscriptionLevel, String productId) throws AuthorizationException, NotFoundException {
 
         // Only users with a subscription may view product details
-        if (!(subscriptionLevel.isBlank())) {
+        if (!(subscriptionLevel == null || subscriptionLevel.isBlank())) {
 
             // If product exists, perform authorization
             if (productService.productExists(productId)) {

@@ -26,12 +26,16 @@ import java.util.Collection;
 
 public class JsonUtil {
 
-    static JsonObject getJsonObject(Product product) {
-        return getJsonObject(product, false);
+    public static JsonObject getJsonObjectWithDescription(Product product) {
+        return getJsonObject(product, true);
     }
 
-    static JsonObject getJsonObjectWithDescription(Product product) {
-        return getJsonObject(product, true);
+    public static JsonArray getJsonArrayFromCollection(Collection<Product> productList) {
+        JsonArrayBuilder jsonProductListBuilder = Json.createArrayBuilder();
+        productList.forEach(product -> jsonProductListBuilder.add(
+                getJsonObject(product, false)
+        ));
+        return jsonProductListBuilder.build();
     }
 
     private static JsonObject getJsonObject(Product product, boolean includeDescription) {
@@ -46,13 +50,4 @@ public class JsonUtil {
 
         return builder.build();
     }
-
-    static JsonArray getJsonArrayFromCollection(Collection<Product> productList) {
-        JsonArrayBuilder jsonProductListBuilder = Json.createArrayBuilder();
-        productList.forEach(product -> jsonProductListBuilder.add(
-                getJsonObject(product, false)
-        ));
-        return jsonProductListBuilder.build();
-    }
-
 }
