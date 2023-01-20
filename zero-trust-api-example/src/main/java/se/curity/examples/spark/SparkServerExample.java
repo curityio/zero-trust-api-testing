@@ -63,7 +63,6 @@ public class SparkServerExample implements SparkApplication
                 get("/:productId", new GetProductRequestHandler(productService));
             });
         });
-
     }
 
     @Override

@@ -1,5 +1,6 @@
 package se.curity.examples.spark.mock;
 
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
@@ -9,7 +10,6 @@ import org.jose4j.jwt.JwtClaims;
 import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.Assertions;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -89,8 +89,7 @@ public class MockJwtIssuer {
         }
     }
 
-    public void publishJwks() {
-        String jwks = new JsonWebKeySet(SIGNING_KEY).toJson();
-        stubFor(get("/jwks").willReturn(ok(jwks)));
+    public String getJwks() {
+        return new JsonWebKeySet(SIGNING_KEY).toJson();
     }
 }

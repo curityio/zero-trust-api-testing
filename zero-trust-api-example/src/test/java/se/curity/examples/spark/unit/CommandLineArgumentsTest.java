@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.curity.examples.spark.unittests;
+package se.curity.examples.spark.unit;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
