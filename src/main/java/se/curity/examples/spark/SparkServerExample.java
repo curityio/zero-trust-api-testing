@@ -56,13 +56,11 @@ public class SparkServerExample implements SparkApplication
 
         initStandalone(appliedOptions);
         // Set up the product service to respond to /products and /products/productId routes
-        path("/api", () -> {
-            before("/*", (q, a) -> _logger.debug("Received api call"));
-            path("/products", () -> {
+        path("/api", () -> path("/products", () -> {
                 get("", new ListProductsRequestHandler(productService));
                 get("/:productId", new GetProductRequestHandler(productService));
-            });
-        });
+            })
+        );
     }
 
     @Override
