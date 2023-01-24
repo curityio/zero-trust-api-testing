@@ -1,6 +1,5 @@
 package se.curity.examples.spark.integration;
 
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -38,7 +37,7 @@ public class GetProductIsAuthorizedTest extends AbstractApiAuthorizationTest {
     @ParameterizedTest
     @MethodSource("provideInputForAuthorizedRequests")
     void returnJsonObjectForProductWhenUserIsAuthorized(String name, String country, String subscriptionLevel, String productId) {
-        HttpResponse<String> response = sendAuthenticatedRequest(name, Map.of("country", country, "subscription_level",subscriptionLevel, "scope", "read"), serverUrl("/api/products/" + productId));
+        HttpResponse<String> response = sendAuthenticatedRequest(name, Map.of("country", country, "subscription_level",subscriptionLevel, "scope", "read"), applicationUrl("/api/products/" + productId));
         assertEquals(200, response.statusCode(), "Response Code");
 
         Product product = mockProductService.getProduct(productId);
@@ -48,35 +47,30 @@ public class GetProductIsAuthorizedTest extends AbstractApiAuthorizationTest {
 
     @Test
     void returnNotFoundWhenUserIsAuthorizedButProductDoesNotExist() {
-        //TODO: use WireMockRuntimeInfo runtimeInfo to retrieve port
-        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("country", "se", "subscription_level","trial", "scope", "read"), serverUrl("/api/products/-1"));
+        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("country", "se", "subscription_level","trial", "scope", "read"), applicationUrl("/api/products/-1"));
         assertEquals(404, response.statusCode(), "Response Code");
     }
 
     @Test
     void denyAccessWhenUserIsNotAuthorizedToAccessExclusiveProduct() {
-        //TODO: use WireMockRuntimeInfo runtimeInfo to retrieve port
-        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("country", "se", "subscription_level","trial", "scope", "read"), serverUrl("/api/products/5"));
+        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("country", "se", "subscription_level","trial", "scope", "read"), applicationUrl("/api/products/5"));
         assertEquals(403, response.statusCode(), "Response Code");
     }
 
     @Test
     void denyAccessWhenSubscriptionLevelIsEmpty() {
-        //TODO: use WireMockRuntimeInfo runtimeInfo to retrieve port
-        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("country", "se", "subscription_level","", "scope", "read"), serverUrl("/api/products/5"));
+        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("country", "se", "subscription_level","", "scope", "read"), applicationUrl("/api/products/5"));
         assertEquals(403, response.statusCode(), "Response Code");
     }
 
     @Test
     void denyAccessWhenNoSubscriptionLevel() {
-        //TODO: use WireMockRuntimeInfo runtimeInfo to retrieve port
-        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("country", "se", "subscription_level","", "scope", "read"), serverUrl("/api/products/5"));
+        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("country", "se", "scope", "read"), applicationUrl("/api/products/5"));
         assertEquals(403, response.statusCode(), "Response Code");
     }
     @Test
     void denyAccessWhenUserLoadsProductFromDifferentCountry() {
-        //TODO: use WireMockRuntimeInfo runtimeInfo to retrieve port
-        HttpResponse<String> response = sendAuthenticatedRequest("Bob", Map.of("country", "us", "subscription_level","trial", "scope", "read"), serverUrl("/api/products/5"));
+        HttpResponse<String> response = sendAuthenticatedRequest("Bob", Map.of("country", "us", "subscription_level","trial", "scope", "read"), applicationUrl("/api/products/5"));
         assertEquals(403, response.statusCode(), "Response Code");
     }
 

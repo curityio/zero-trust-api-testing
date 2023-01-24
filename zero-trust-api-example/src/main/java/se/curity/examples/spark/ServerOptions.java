@@ -117,17 +117,17 @@ public class ServerOptions {
      * Create default options:
      * port: 9090 <br/>
      * issuer: https://localhost:8443/oauth/v2/oauth-anonymous <br/>
-     * audience: client_id <br/>
+     * audience: www <br/>
      * scope: read <br/>
      * jwksurl: https://localhost:8443/oauth/v2/oauth-anonymous/jwks
      */
     public ServerOptions() {
         this.port = 9090;
         this.issuer = "https://localhost:8443/oauth/v2/oauth-anonymous";
-        this.audience = "client_id";
+        this.audience = "www";
         this.scope = "read";
         try {
-            this.jwksUrl = new URL("https", "localhost", 8843, "/oauth/v2/oauth-anonymous/jwks");
+            this.jwksUrl = new URL("https", "localhost", 8443, "/oauth/v2/oauth-anonymous/jwks");
         } catch (MalformedURLException exception) {
             // not going to happen because values are hardcoded.
         }
@@ -138,8 +138,8 @@ public class ServerOptions {
      * --port <port number of this application>
      * --issuer <Expected value of iss claim in JWT
      * --jwksurl <URL to JWKS>
-     * --audience <Expected aud claim in jwt>
-     * --scope <Expected scopes in jwt>);
+     * --audience <Expected value aud claim in JWT>
+     * --scope <Expected scopes in JWT>);
      * @param args an optional list of arguments. If empty or null, default values will be used.
      */
     public ServerOptions(@Nullable String[] args) {

@@ -1,6 +1,5 @@
 package se.curity.examples.spark.integration;
 
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -18,8 +17,7 @@ public class ListProductsAuthorizationTest extends AbstractApiAuthorizationTest 
     @ParameterizedTest
     @ValueSource(strings = { "se", "us", "de"})
     void returnProductListForCountry(String country) {
-        //TODO: use WireMockRuntimeInfo runtimeInfo to retrieve port
-        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("country", country, "scope", "read"), serverUrl("/api/products"));
+        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("country", country, "scope", "read"), applicationUrl("/api/products"));
         assertEquals(200, response.statusCode(), "Response Code");
 
         Collection<Product> productList = mockProductService.getProductForCountry(country);
@@ -28,16 +26,14 @@ public class ListProductsAuthorizationTest extends AbstractApiAuthorizationTest 
 
     @Test
     void returnEmptyProductListWhenCountryIsEmpty() {
-        //TODO: use WireMockRuntimeInfo runtimeInfo to retrieve port
-        HttpResponse<String> response = sendAuthenticatedRequest("Bob", Map.of("country", "", "scope", "read"), serverUrl("/api/products"));
+        HttpResponse<String> response = sendAuthenticatedRequest("Bob", Map.of("country", "", "scope", "read"), applicationUrl("/api/products"));
         assertEquals(200, response.statusCode(), "Response Code");
         assertEquals("[]", response.body());
     }
 
     @Test
     void returnEmptyProductListWhenCountryIsMissing() {
-        //TODO: use WireMockRuntimeInfo runtimeInfo to retrieve port
-        HttpResponse<String> response = sendAuthenticatedRequest("Bob", Map.of("scope", "read"), serverUrl("/api/products"));
+        HttpResponse<String> response = sendAuthenticatedRequest("Bob", Map.of("scope", "read"), applicationUrl("/api/products"));
         assertEquals(200, response.statusCode(), "Response Code");
         assertEquals("[]", response.body());
     }

@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package se.curity.examples.http;
+package se.curity.examples.spark.integration.http;
 
 import io.curity.oauth.WebKeysClient;
-import org.apache.hc.client5.http.classic.HttpClient;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.core5.http.ContentType;
-import org.apache.hc.core5.http.HttpStatus;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.ContentType;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
-import static org.apache.hc.core5.http.HttpHeaders.ACCEPT;
+import static org.apache.http.HttpHeaders.ACCEPT;
 
 class DefaultWebKeysClient implements WebKeysClient
 {
@@ -52,11 +52,11 @@ class DefaultWebKeysClient implements WebKeysClient
 
         return _httpClient.execute(get, response -> {
 
-            if (response.getCode() != HttpStatus.SC_OK)
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
             {
-                _logger.severe(() -> "Got error from Jwks server: " + response.getCode());
+                _logger.severe(() -> "Got error from Jwks server: " + response.getStatusLine().getStatusCode());
 
-                throw new IOException("Got error from Jwks server: " + response.getCode());
+                throw new IOException("Got error from Jwks server: " + response.getStatusLine().getStatusCode());
             }
 
             return EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);

@@ -37,22 +37,22 @@ public abstract class AbstractApiAuthorizationTest {
     static final int PORT = 9090;
 
     static MockProductServiceImpl mockProductService;
-    static boolean serverStarted;
+    static boolean applicationStarted;
 
     /**
      * Creates JWTs for the given issuer and key
      */
     static MockJwtIssuer mockJwtIssuer = new MockJwtIssuer(ISSUER, "key1");
     /**
-     * Used to mock JWKS endpoint for mocked jwt issuer
+     * Used to mock JWKS endpoint for mocked JWT issuer
      */
     @RegisterExtension
     static WireMockExtension wm1 = WireMockExtension.newInstance()
-            .options(wireMockConfig().httpDisabled(false).httpsPort(8443))
+            .options(wireMockConfig().httpDisabled(true).httpsPort(8443))
             .build();
 
     @BeforeAll
-    static synchronized void startServer() throws ServletException {
+    static synchronized void startApplication() throws ServletException {
         String jwksUrl = wm1.baseUrl() + "/jwks";
         Logger.getLogger(AbstractApiAuthorizationTest.class.getName()).info("Mocked JWKS URL on " + jwksUrl);
 
@@ -63,10 +63,10 @@ public abstract class AbstractApiAuthorizationTest {
         options.setAudience(AUDIENCE);
         options.setScope(SCOPE);
 
-        if (!serverStarted) {
+        if (!applicationStarted) {
             mockProductService = new MockProductServiceImpl();;
             SparkServerExample.runLocally(mockProductService, options);
-            serverStarted = true;
+            applicationStarted = true;
         }
     }
 
@@ -80,12 +80,12 @@ public abstract class AbstractApiAuthorizationTest {
     }
 
     @AfterAll
-    static synchronized void stopServer() {
+    static synchronized void stopApplication() {
         Spark.awaitStop();
     }
 
 
-    String serverUrl(String path) {
+    String applicationUrl(String path) {
         try {
             return new URL("http", "localhost", PORT, path).toString();
         } catch (MalformedURLException e) {
@@ -107,14 +107,14 @@ public abstract class AbstractApiAuthorizationTest {
     /**
      * Send an unauthenticated request to the given url
      * @param url endpoint to send request to
-     * @return response endpoint as sent by server
+     * @return response as received from server
      */
     HttpResponse<String> sendUnauthenticatedRequest(String url) {
         return sendRequest(url, null);
     }
 
     /**
-     * Send a request to the given url and add jwt to authorization header if available
+     * Send a request to the given url and add JWT to authorization header if available
      * @param urlString endpoint to send request to
      * @param jwt optional, token to add to the authorization header
      * @return response from server/endpoint

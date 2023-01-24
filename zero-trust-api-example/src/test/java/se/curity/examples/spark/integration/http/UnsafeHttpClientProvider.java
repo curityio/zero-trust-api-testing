@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.curity.examples.http;
+package se.curity.examples.spark.integration.http;
 
 import io.curity.oauth.IntrospectionClient;
 import io.curity.oauth.OAuthFilter;
 import io.curity.oauth.WebKeysClient;
-import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.http.client.HttpClient;
 
 import javax.servlet.UnavailableException;
 import java.net.URI;

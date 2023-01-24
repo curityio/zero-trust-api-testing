@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package se.curity.examples.http;
+package se.curity.examples.spark.integration.http;
 
 import io.curity.oauth.IntrospectionClient;
-import org.apache.hc.client5.http.classic.HttpClient;
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
-import org.apache.hc.core5.http.ContentType;
-import org.apache.hc.core5.http.HttpStatus;
-import org.apache.hc.core5.http.NameValuePair;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
-import org.apache.hc.core5.http.message.BasicNameValuePair;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static org.apache.hc.core5.http.HttpHeaders.ACCEPT;
+import static org.apache.http.HttpHeaders.ACCEPT;
 
 class DefaultIntrospectClient implements IntrospectionClient
 {
@@ -69,11 +69,11 @@ class DefaultIntrospectClient implements IntrospectionClient
         post.setEntity(new UrlEncodedFormEntity(params));
 
         return _httpClient.execute(post, response -> {
-            if (response.getCode() != HttpStatus.SC_OK)
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
             {
-                _logger.severe(() -> "Got error from introspection server: " + response.getCode());
+                _logger.severe(() -> "Got error from introspection server: " + response.getStatusLine().getStatusCode());
 
-                throw new IOException("Got error from introspection server: " + response.getCode());
+                throw new IOException("Got error from introspection server: " + response.getStatusLine().getStatusCode());
             }
 
             return EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);

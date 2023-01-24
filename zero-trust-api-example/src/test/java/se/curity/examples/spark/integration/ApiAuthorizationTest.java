@@ -32,7 +32,7 @@ public class ApiAuthorizationTest extends AbstractApiAuthorizationTest {
      */
     @Test
     void unauthenticatedIndexTest() {
-        HttpResponse<String> response = sendUnauthenticatedRequest(serverUrl("/"));
+        HttpResponse<String> response = sendUnauthenticatedRequest(applicationUrl("/"));
         assertEquals(200, response.statusCode(), "Response Code");
         assertEquals("Welcome!", response.body());
     }
@@ -43,7 +43,7 @@ public class ApiAuthorizationTest extends AbstractApiAuthorizationTest {
     @ParameterizedTest
     @ValueSource(strings = { "/api", "/api/products", "/api/products/99"})
     void returnsUnauthorizedIfJwtIsMissing(String path) {
-        HttpResponse<String> response = sendUnauthenticatedRequest(serverUrl(path));
+        HttpResponse<String> response = sendUnauthenticatedRequest(applicationUrl(path));
         assertEquals(401, response.statusCode(), path + " endpoint requires authentication");
     }
 
@@ -54,8 +54,7 @@ public class ApiAuthorizationTest extends AbstractApiAuthorizationTest {
     @ParameterizedTest
     @ValueSource(strings = { "/api", "/api/products", "/api/products/99"})
     void returnsUnauthorizedWhenScopeIsInvalid(String path) {
-        //TODO: use WireMockRuntimeInfo runtimeInfo to retrieve port
-        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("scope", "someOtherScope"), serverUrl("/api"));
+        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("scope", "someOtherScope"), applicationUrl(path));
         assertEquals(403, response.statusCode(), "Response Code");
     }
 
@@ -64,7 +63,7 @@ public class ApiAuthorizationTest extends AbstractApiAuthorizationTest {
      */
     @Test
     void returnsNotFoundWhenScopeIsRead() {
-        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("scope", "read"), serverUrl("/api") );
+        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("scope", "read"), applicationUrl("/api") );
         assertEquals(404, response.statusCode(), "Response Code");
     }
 }
