@@ -21,7 +21,7 @@
     <artifactId>project</artifactId>
     <packaging>pom</packaging>
     <version>3.0.0</version>
-    <name>Curity OAuth filter example - Project POM</name>
+    <name>Zero Trust API Example - Project POM</name>
 
    <organization>
         <name>Curity AB</name>
@@ -30,7 +30,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jettyVersion>9.4.49.v20220914</jettyVersion>
+        <jettyVersion>9.4.50.v20221201</jettyVersion>
     </properties>
 
     <modules>
@@ -85,17 +85,6 @@
                 <artifactId>httpclient</artifactId>
                 <version>4.5.14</version>
             </dependency>
-            <!--<dependency>
-                <groupId>org.apache.httpcomponents.client5</groupId>
-                <artifactId>httpclient5</artifactId>
-                <version>5.2.1</version>
-            </dependency>-->
-            <!--<dependency>
-                <groupId>jakarta.servlet</groupId>
-                <artifactId>jakarta.servlet-api</artifactId>
-                <version>5.0.0</version>
-                <scope>provided</scope>
-            </dependency>-->
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
@@ -119,24 +108,8 @@
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-server</artifactId>
-                <version>9.4.50.v20221201</version>
-            </dependency>
-           <!-- <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-server</artifactId>
-                <version>11.0.13</version>
-            </dependency>-->
-            <!--<dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-servlet</artifactId>
-                <version>11.0.13</version>
-            </dependency>-->
-            <!--<dependency>
-                <groupId>org.eclipse.jetty.aggregate</groupId>
-                <artifactId>jetty-all</artifactId>
                 <version>${jettyVersion}</version>
-                <type>pom</type>
-            </dependency>-->
+            </dependency>
             <dependency>
                 <groupId>org.bitbucket.b_c</groupId>
                 <artifactId>jose4j</artifactId>
