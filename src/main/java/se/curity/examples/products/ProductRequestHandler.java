@@ -57,13 +57,7 @@ public abstract class ProductRequestHandler implements Route {
             return productService.getProducts().stream()
                     .filter((product) -> {
                         Collection<String> authorizedCountriesForProduct = product.getAuthorizedCountries();
-                        return switch (countryCode) {
-                            case "se" -> authorizedCountriesForProduct.contains("se");
-                            case "de" -> authorizedCountriesForProduct.contains("de");
-                            case "gb" -> authorizedCountriesForProduct.contains("gb");
-                            case "us" -> authorizedCountriesForProduct.contains("us");
-                            default -> false;
-                        };
+                        return authorizedCountriesForProduct.contains(countryCode);
                     })
                     .toList();
         } else {

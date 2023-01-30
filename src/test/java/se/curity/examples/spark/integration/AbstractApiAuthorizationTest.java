@@ -33,7 +33,7 @@ public abstract class AbstractApiAuthorizationTest {
 
     static final String ISSUER = "jwtIssuer";
     static final String AUDIENCE = "someClientId";
-    static final String SCOPE = "read";
+    static final String SCOPE = "products";
     static final int PORT = 9090;
 
     static MockProductServiceImpl mockProductService;
@@ -84,14 +84,6 @@ public abstract class AbstractApiAuthorizationTest {
         Spark.awaitStop();
     }
 
-
-    String applicationUrl(String path) {
-        try {
-            return new URL("http", "localhost", PORT, path).toString();
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-    }
     /**
      * Send an authenticated request to the given url
      * @param subjectName name of authenticated user
@@ -140,5 +132,18 @@ public abstract class AbstractApiAuthorizationTest {
             Assertions.fail(String.format("Cannot send request to %s", urlString));
         }
         return null;
+    }
+
+    /**
+     * Get the full URL of the given path for the API
+     * @param path relative path/file part of URL
+     * @return URL including protocol, host, port and path
+     */
+    String applicationUrl(String path) {
+        try {
+            return new URL("http", "localhost", PORT, path).toString();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

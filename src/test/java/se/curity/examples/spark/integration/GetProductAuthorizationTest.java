@@ -13,7 +13,8 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GetProductIsAuthorizedTest extends AbstractApiAuthorizationTest {
+public class GetProductAuthorizationTest extends AbstractApiAuthorizationTest {
+
 
     private static Stream<Arguments> provideInputForAuthorizedRequests() {
         return Stream.of(
@@ -37,7 +38,12 @@ public class GetProductIsAuthorizedTest extends AbstractApiAuthorizationTest {
     @ParameterizedTest
     @MethodSource("provideInputForAuthorizedRequests")
     void returnJsonObjectForProductWhenUserIsAuthorized(String name, String country, String subscriptionLevel, String productId) {
-        HttpResponse<String> response = sendAuthenticatedRequest(name, Map.of("country", country, "subscription_level",subscriptionLevel, "scope", "read"), applicationUrl("/api/products/" + productId));
+        HttpResponse<String> response = sendAuthenticatedRequest(
+                name,
+                Map.of("country", country,
+                        "subscription_level",subscriptionLevel,
+                        "scope", SCOPE),
+                applicationUrl("/api/products/" + productId));
         assertEquals(200, response.statusCode(), "Response Code");
 
         Product product = mockProductService.getProduct(productId);
@@ -47,31 +53,54 @@ public class GetProductIsAuthorizedTest extends AbstractApiAuthorizationTest {
 
     @Test
     void returnNotFoundWhenUserIsAuthorizedButProductDoesNotExist() {
-        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("country", "se", "subscription_level","trial", "scope", "read"), applicationUrl("/api/products/-1"));
+        HttpResponse<String> response = sendAuthenticatedRequest(
+                "Alice",
+                Map.of("country", "se",
+                        "subscription_level","trial",
+                        "scope", SCOPE),
+                applicationUrl("/api/products/-1"));
         assertEquals(404, response.statusCode(), "Response Code");
     }
 
     @Test
     void denyAccessWhenUserIsNotAuthorizedToAccessExclusiveProduct() {
-        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("country", "se", "subscription_level","trial", "scope", "read"), applicationUrl("/api/products/5"));
+        HttpResponse<String> response = sendAuthenticatedRequest(
+                "Alice",
+                Map.of("country", "se",
+                        "subscription_level","trial",
+                        "scope", SCOPE),
+                applicationUrl("/api/products/5"));
         assertEquals(403, response.statusCode(), "Response Code");
     }
 
     @Test
     void denyAccessWhenSubscriptionLevelIsEmpty() {
-        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("country", "se", "subscription_level","", "scope", "read"), applicationUrl("/api/products/5"));
+        HttpResponse<String> response = sendAuthenticatedRequest(
+                "Alice",
+                Map.of("country", "se",
+                        "subscription_level","",
+                        "scope", SCOPE),
+                applicationUrl("/api/products/5"));
         assertEquals(403, response.statusCode(), "Response Code");
     }
 
     @Test
     void denyAccessWhenNoSubscriptionLevel() {
-        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("country", "se", "scope", "read"), applicationUrl("/api/products/5"));
+        HttpResponse<String> response = sendAuthenticatedRequest(
+                "Alice",
+                Map.of("country", "se",
+                        "scope", SCOPE),
+                applicationUrl("/api/products/5"));
         assertEquals(403, response.statusCode(), "Response Code");
     }
     @Test
     void denyAccessWhenUserLoadsProductFromDifferentCountry() {
-        HttpResponse<String> response = sendAuthenticatedRequest("Bob", Map.of("country", "us", "subscription_level","trial", "scope", "read"), applicationUrl("/api/products/5"));
+        HttpResponse<String> response = sendAuthenticatedRequest(
+                "Bob",
+                Map.of("country", "us",
+                        "subscription_level","trial",
+                        "scope", SCOPE),
+                applicationUrl("/api/products/5"));
         assertEquals(403, response.statusCode(), "Response Code");
     }
-
 }

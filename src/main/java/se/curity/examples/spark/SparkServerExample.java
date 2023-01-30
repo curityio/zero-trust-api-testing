@@ -56,58 +56,24 @@ public class SparkServerExample implements SparkApplication
 
         initStandalone(appliedOptions);
         // Set up the product service to respond to /products and /products/productId routes
-        path("/api", () -> path("/products", () -> {
-                get("", new ListProductsRequestHandler(productService));
-                get("/:productId", new GetProductRequestHandler(productService));
+        path("/api", () ->
+                path("/products", () -> {
+                    get("", new ListProductsRequestHandler(productService));
+                    get("/:productId", new GetProductRequestHandler(productService));
             })
         );
-    }
-
-    @Override
-    public void init()
-    {
-        _logger.debug("Initializing OAuth protected API");
-
-        redirect.get("", "/");
-        get("/", ((request, response) -> "Welcome!"));
     }
 
     private void initStandalone(ServerOptions options) throws ServletException
     {
         init();
         OAuthFilter filter = getJwtFilter(options);
+        Filter oauthFilter = toSparkFilter(filter);
 
-        Filter oauthFilter = (request, response) -> {
-            filter.doFilter(request.raw(), response.raw(), null);
-            if(response.raw().isCommitted())
-            {
-                halt();
-            }
-        };
         // Run the filter before any api/* route
         before("/api", oauthFilter);
         before("/api/", oauthFilter);
         before("/api/*", oauthFilter);
-
-    }
-
-    /**
-     * Start the server locally with the given product service and options
-     * @param productService the service that provides the data
-     * @param options the options such as port, issuer, audience and jwksurl
-     * @throws ServletException if oauth filter cannot be initialized
-     */
-    public static void runLocally(@Nullable ProductService productService, @Nullable ServerOptions options) throws ServletException {
-        new SparkServerExample(
-                Objects.requireNonNullElse(productService, new ProductServiceMapImpl()),
-                Objects.requireNonNullElse(options, new ServerOptions())
-        );
-    }
-
-    public static void main(String[] args) throws ServletException {
-
-        ServerOptions options = new ServerOptions(args);
-        new SparkServerExample(new ProductServiceMapImpl(), options);
     }
 
     /**
@@ -130,6 +96,45 @@ public class SparkServerExample implements SparkApplication
 
         filter.init(filterParams);
         return filter;
+    }
+
+    private Filter toSparkFilter(javax.servlet.Filter filter) {
+        Filter sparkFilter = (request, response) -> {
+            filter.doFilter(request.raw(), response.raw(), null);
+            if(response.raw().isCommitted())
+            {
+                halt();
+            }
+        };
+        return sparkFilter;
+    }
+
+    @Override
+    public void init()
+    {
+        _logger.debug("Initializing OAuth protected API");
+
+        redirect.get("", "/");
+        get("/", ((request, response) -> "Welcome!"));
+    }
+
+    /**
+     * Start the server locally with the given product service and options
+     * @param productService the service that provides the data
+     * @param options the options such as port, issuer, audience and jwksurl
+     * @throws ServletException if oauth filter cannot be initialized
+     */
+    public static void runLocally(@Nullable ProductService productService, @Nullable ServerOptions options) throws ServletException {
+        new SparkServerExample(
+                Objects.requireNonNullElse(productService, new ProductServiceMapImpl()),
+                Objects.requireNonNullElse(options, new ServerOptions())
+        );
+    }
+
+    public static void main(String[] args) throws ServletException {
+
+        ServerOptions options = new ServerOptions(args);
+        new SparkServerExample(new ProductServiceMapImpl(), options);
     }
 
 }

@@ -33,6 +33,19 @@ public class ListProductsRequestHandler extends ProductRequestHandler {
         super(productService);
     }
 
+    @Override
+    public Object handle(Request request, Response response) {
+        try {
+            // Get the country claim from the user principal
+            String countryCode = ((AuthenticatedUser)request.attribute(OAuthFilter.PRINCIPAL_ATTRIBUTE_NAME))
+                    .getClaims().getString(CLAIM_NAME_COUNTRY);
+            return getProducts(countryCode);
+        } catch (NullPointerException | ClassCastException exception) {
+            // There's an error with the country claim. Return empty list.
+            return "[]";
+        }
+    }
+
     /**
      * Get the list of products available in the given country
      * @param countryCode country code formatted as ISO3166-1 alpha-2
@@ -49,18 +62,5 @@ public class ListProductsRequestHandler extends ProductRequestHandler {
         }
 
         return jsonArrayBuilder.build();
-    }
-
-    @Override
-    public Object handle(Request request, Response response) {
-        try {
-            // Get the country claim from the user principal
-            String countryCode = ((AuthenticatedUser)request.attribute(OAuthFilter.PRINCIPAL_ATTRIBUTE_NAME))
-                    .getClaims().getString(CLAIM_NAME_COUNTRY);
-            return getProducts(countryCode);
-        } catch (NullPointerException | ClassCastException exception) {
-            // There's an error with the country claim. Return empty list.
-            return "[]";
-        }
     }
 }

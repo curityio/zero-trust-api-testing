@@ -17,7 +17,11 @@ public class ListProductsAuthorizationTest extends AbstractApiAuthorizationTest 
     @ParameterizedTest
     @ValueSource(strings = { "se", "us", "de"})
     void returnProductListForCountry(String country) {
-        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("country", country, "scope", "read"), applicationUrl("/api/products"));
+        HttpResponse<String> response = sendAuthenticatedRequest(
+                "Alice",
+                Map.of("country", country,
+                        "scope", SCOPE),
+                applicationUrl("/api/products"));
         assertEquals(200, response.statusCode(), "Response Code");
 
         Collection<Product> productList = mockProductService.getProductForCountry(country);
@@ -26,14 +30,21 @@ public class ListProductsAuthorizationTest extends AbstractApiAuthorizationTest 
 
     @Test
     void returnEmptyProductListWhenCountryIsEmpty() {
-        HttpResponse<String> response = sendAuthenticatedRequest("Bob", Map.of("country", "", "scope", "read"), applicationUrl("/api/products"));
+        HttpResponse<String> response = sendAuthenticatedRequest(
+                "Bob", Map.of(
+                        "country", "",
+                        "scope", SCOPE),
+                applicationUrl("/api/products"));
         assertEquals(200, response.statusCode(), "Response Code");
         assertEquals("[]", response.body());
     }
 
     @Test
     void returnEmptyProductListWhenCountryIsMissing() {
-        HttpResponse<String> response = sendAuthenticatedRequest("Bob", Map.of("scope", "read"), applicationUrl("/api/products"));
+        HttpResponse<String> response = sendAuthenticatedRequest(
+                "Bob",
+                Map.of("scope", SCOPE),
+                applicationUrl("/api/products"));
         assertEquals(200, response.statusCode(), "Response Code");
         assertEquals("[]", response.body());
     }

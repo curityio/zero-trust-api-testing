@@ -53,8 +53,11 @@ public class ApiAuthorizationTest extends AbstractApiAuthorizationTest {
      */
     @ParameterizedTest
     @ValueSource(strings = { "/api", "/api/products", "/api/products/99"})
-    void returnsUnauthorizedWhenScopeIsInvalid(String path) {
-        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("scope", "someOtherScope"), applicationUrl(path));
+    void returnsForbiddenWhenScopeIsInvalid(String path) {
+        HttpResponse<String> response = sendAuthenticatedRequest(
+                "Alice",
+                Map.of("scope", "someOtherScope"),
+                applicationUrl(path));
         assertEquals(403, response.statusCode(), "Response Code");
     }
 
@@ -62,8 +65,11 @@ public class ApiAuthorizationTest extends AbstractApiAuthorizationTest {
      * Test that api endpoint is not found when JWT includes correct scope (instead of access denied)
      */
     @Test
-    void returnsNotFoundWhenScopeIsRead() {
-        HttpResponse<String> response = sendAuthenticatedRequest("Alice", Map.of("scope", "read"), applicationUrl("/api") );
+    void returnsNotFoundWhenScopeIsValidAndEndpointDoesNotExist() {
+        HttpResponse<String> response = sendAuthenticatedRequest(
+                "Alice",
+                Map.of("scope", SCOPE),
+                applicationUrl("/api") );
         assertEquals(404, response.statusCode(), "Response Code");
     }
 }
