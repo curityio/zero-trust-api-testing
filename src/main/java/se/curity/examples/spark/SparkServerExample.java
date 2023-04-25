@@ -92,8 +92,8 @@ public class SparkServerExample implements SparkApplication
                 "3600",
                 options.getIssuer(),
                 options.getAudience());
-        OAuthFilter filter = new OAuthJwtFilter();
 
+        OAuthFilter filter = new OAuthJwtFilter();
         filter.init(filterParams);
         return filter;
     }

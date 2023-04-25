@@ -49,7 +49,7 @@ public class MockProductServiceImpl implements ProductService {
         return productMap.containsKey(id);
     }
 
-    public Collection<Product> getProductForCountry(String country) {
+    public Collection<Product> getProductsForCountry(String country) {
         return productMap.values()
                 .stream()
                 .filter(product -> product.getAuthorizedCountries().contains(country))

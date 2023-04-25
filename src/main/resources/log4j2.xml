@@ -27,6 +27,7 @@
         </Console>
     </Appenders>
     <Loggers>
+        <Logger name="io.curity" level="TRACE"/>
         <Logger name="se.curity" level="TRACE"/>
     </Loggers>
 </Configuration>

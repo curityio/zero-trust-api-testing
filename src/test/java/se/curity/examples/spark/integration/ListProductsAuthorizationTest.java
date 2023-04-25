@@ -24,7 +24,7 @@ public class ListProductsAuthorizationTest extends AbstractApiAuthorizationTest 
                 applicationUrl("/api/products"));
         assertEquals(200, response.statusCode(), "Response Code");
 
-        Collection<Product> productList = mockProductService.getProductForCountry(country);
+        Collection<Product> productList = mockProductService.getProductsForCountry(country);
         assertEquals(JsonUtil.getJsonArrayFromCollection(productList).toString(), response.body());
     }
 
