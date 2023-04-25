@@ -124,8 +124,8 @@ public class ServerOptions {
     public ServerOptions() {
         this.port = 9090;
         this.issuer = "https://localhost:8443/oauth/v2/oauth-anonymous";
-        this.audience = "www";
-        this.scope = "read";
+        this.audience = "api.example.com";
+        this.scope = "products";
         try {
             this.jwksUrl = new URL("https", "localhost", 8443, "/oauth/v2/oauth-anonymous/jwks");
         } catch (MalformedURLException exception) {

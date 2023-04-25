@@ -1,6 +1,5 @@
 package se.curity.examples.spark.mock;
 
-import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
@@ -12,10 +11,6 @@ import org.junit.jupiter.api.Assertions;
 
 import java.util.Map;
 import java.util.Objects;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 
 public class MockJwtIssuer {
 

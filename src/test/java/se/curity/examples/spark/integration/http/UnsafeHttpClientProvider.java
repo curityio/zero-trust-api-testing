@@ -38,36 +38,12 @@ public class UnsafeHttpClientProvider extends io.curity.oauth.HttpClientProvider
         String OAUTH_HOST = "oauthHost";
         String OAUTH_PORT = "oauthPort";
         String JSON_WEB_KEYS_PATH = "jsonWebKeysPath";
-        String INTROSPECTION_PATH = "introspectionPath";
-        String CLIENT_ID = "clientId";
-        String CLIENT_SECRET = "clientSecret";
     }
 
     @Override
     public IntrospectionClient createIntrospectionClient(Map<String, ?> config) throws UnavailableException {
 
-        String oauthHost = getInitParamValue(InitParams.OAUTH_HOST, config);
-        int oauthPort = getInitParamValue(InitParams.OAUTH_PORT, config, Integer::parseInt);
-        String introspectionPath = getInitParamValue(InitParams.INTROSPECTION_PATH, config);
-        String clientId = getInitParamValue(InitParams.CLIENT_ID, config);
-        String clientSecret = getInitParamValue(InitParams.CLIENT_SECRET, config);
-
-        URI introspectionUri;
-        try
-        {
-            introspectionUri = new URI("https", null, oauthHost, oauthPort, introspectionPath, null, null);
-        }
-        catch (URISyntaxException e)
-        {
-            _logger.log(Level.SEVERE, "Invalid parameters", e);
-
-            throw new UnavailableException("Service is unavailable");
-        }
-
-        Supplier<HttpClient> unsafeHttpClientSupplier = new UnsafeHttpClientSupplier();
-        HttpClient httpClient = unsafeHttpClientSupplier.get();
-
-        return new DefaultIntrospectClient(introspectionUri, clientId, clientSecret, httpClient);
+        throw new UnavailableException("Introspection is not used in this example");
     }
 
     @Override

@@ -3,8 +3,8 @@
 This project is an example of a Java web application configured to use an
 `OAuth Filter` protecting access to the API. It shows, how to enforce a JWT
 access token on (certain) requests and use the claims from it for authorization.
-In addition, the example includes tests to demonstrate how to effectively work
-with authorization and JWTs during development.
+In addition, the example includes tests to demonstrate how to productively work
+with authorization and JWTs during development and when writing integration tests.
 
 The application is a simple API created with [Spark](http://sparkjava.com),
 but it could be built using any framework which supports Java Servlets. 
@@ -26,7 +26,7 @@ not requiring any external dependencies.
 You can run this application stand-alone without any application server with the help of the JAR file:
 
 ```bash
-java -jar zero-trust-api-example-3.0.0.jar
+java -jar target/zero-trust-api-example-3.0.0.jar
 ```
 
 Note, that the application connects to the JWKS URI of the authentication server that - according to the OpenID Connect specification - must be served over HTTPS (see also [Configuration](#configuring)). 
@@ -39,6 +39,7 @@ java -Djavax.net.ssl.trustStore=/path/to/truststore.jks -Djavax.net.ssl.trustSto
 ```
 
 ## Configuring
+
 As mentioned, this application makes use of [Curity's OAuth filter for Java](https://github.com/curityio/oauth-filter-for-java) to enforce the presentation of JWT bearer tokens in requests.
 This filter fetches the keys to validate tokens from the JWKS URI of the authentication server.
 By default, it uses a safe default HTTP client for the connection. However, you can specify a custom `HttpClient` that the filter should use to connect to the authentication server instead. 
@@ -58,7 +59,7 @@ You can configure the application with the parameters required for the JWT valid
 
 
 ```bash
-java -jar zero-trust-api-example-3.0.0.jar --port "9090" --issuer "https://localhost:8443/oauth/v2/oauth-anonymous" --audience "www" --scope "read" --jwksurl "https://localhost:8443/oauth/v2/oauth-anonymous/jwks"
+java -jar zero-trust-api-example-3.0.0.jar --port "9090" --issuer "https://localhost:8443/oauth/v2/oauth-anonymous" --audience "api.example.com" --scope "products" --jwksurl "https://localhost:8443/oauth/v2/oauth-anonymous/jwks"
 ```
 
 ## Testing
