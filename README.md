@@ -1,74 +1,18 @@
-# OAuth - authentication using access tokens, Spark Example
+# OAuth Zero Trust API Testing
 
-This project is an example of a Java web application configured to use an
-`OAuth Filter` protecting access to the API. It shows, how to enforce a JWT
-access token on (certain) requests and use the claims from it for authorization.
-In addition, the example includes tests to demonstrate how to productively work
-with authorization and JWTs during development and when writing integration tests.
+A simple Java REST API implemented using [Spark Java](http://sparkjava.com).\
+The API uses an OAuth filter to implement its JWT validation on every request.\
+The API then uses claims to implement its business  authorization.
 
-The application is a simple API created with [Spark](http://sparkjava.com),
-but it could be built using any framework which supports Java Servlets. 
-It includes hardcoded data to visualize the results of the authorization rules.
+The API's integration tests use a JWT library to create a keypair.\
+This enables the tests to productively issue mock access tokens as any user.\
+A JWKS endpoint is spun up to expose the mock token signing public key.
 
-## Building
+Mock access tokens have the same contract as real access tokens.\
+During integrating tests, the API makes all of the correct OAuth security checks.\
+The techniques demonstrated can also be used in any other API technology stack.
 
-To build this project, use Maven and run the following command:
-
-```
-mvn package
-```
-
-This will create a JAR file in the `target` directory. This file is ready to be deployed,
-not requiring any external dependencies.
-
-## Deploying
-
-You can run this application stand-alone without any application server with the help of the JAR file:
-
-```bash
-java -jar target/zero-trust-api-example-3.0.0.jar
-```
-
-Note, that the application connects to the JWKS URI of the authentication server that - according to the OpenID Connect specification - must be served over HTTPS (see also [Configuration](#configuring)). 
-Consequently, this application must trust the certificate presented by the authentication server.
-
-You can use JVM arguments to explicitly set a truststore with the HTTPS certificate of the JWKS URI. Study the following command:
-
-```bash
-java -Djavax.net.ssl.trustStore=/path/to/truststore.jks -Djavax.net.ssl.trustStorePassword=changeit -jar zero-trust-api-example-3.0.0.jar
-```
-
-## Configuring
-
-As mentioned, this application makes use of [Curity's OAuth filter for Java](https://github.com/curityio/oauth-filter-for-java) to enforce the presentation of JWT bearer tokens in requests.
-This filter fetches the keys to validate tokens from the JWKS URI of the authentication server.
-By default, it uses a safe default HTTP client for the connection. However, you can specify a custom `HttpClient` that the filter should use to connect to the authentication server instead. 
-This is done in the `src/main/resources/META-INF/services/io.curity.oauth.HttpClientProvider` file. This file should contain the name of the class that implements the `HttpClientProvider` interface that creates the custom HTTP client.
-See also Java reference documentation for [service loaders](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/ServiceLoader.html). 
-Study the tests for an example of an `HttpClientProvider`.
-
-You can configure the application with the parameters required for the JWT validation as part of the deployment:
-
-| Command Line Argument | Default Value                                           | Description                                                                                       |
-|-----------------------|---------------------------------------------------------|---------------------------------------------------------------------------------------------------|
-| --port                | `9090`                                                  | Port number that the example application should listen at                                         |
-| --issuer              | `https://localhost:8443/oauth/v2/oauth-anonymous`       | Expected value of `iss` claim in the JWT                                                          |
-| --audience            | `www`                                                   | Expected value of `aud` claim in the JWT                                                          |
-| --scope               | `read`                                                  | Expected scope in the JWT                                                                         |
-| --jwksurl             | `https://localhost:8443/oauth/v2/oauth-anonymous/jwks`  | Endpoint at the authentication server that serves the keys required to validate the JWT signature |
-
-
-```bash
-java -jar zero-trust-api-example-3.0.0.jar --port "9090" --issuer "https://localhost:8443/oauth/v2/oauth-anonymous" --audience "api.example.com" --scope "products" --jwksurl "https://localhost:8443/oauth/v2/oauth-anonymous/jwks"
-```
-
-## Testing
-
-Once the server is running, you can access the application with your favourite browser via the following URL:
-
-```
-http://localhost:9090/
-```
+## API Endpoints
 
 The root path is unprotected. 
 Other endpoints of this example are `/api/products` and `/api/products/<1-5>`, which all require authentication. 
@@ -82,6 +26,45 @@ Checkout the [Working With Claims Tutorial](https://curity.io/resources/learn/wo
 If the user is not authorized to access the resource, i.e. the JWT is missing a valid subscription level or the user tries to access a product from a different country, then the server will return `403`. 
 If the resource cannot be found, e.g. the product with the given ID does not exist, then the server will return `404`. 
 Have a look at `se/curity/examples/products/ProductServiceMapImpl.java` for the details of the provided example data.
+
+## Run the API
+
+To build this project, ensure that JDK 17 or above are installed, and also Maven.\
+Then run the following command to build the API code into a single JAR file:
+
+```bash
+mvn package -DskipTests
+```
+
+This will create a JAR file in the `target` directory and the API can be run like this:
+
+```bash
+java -jar target/zero-trust-api-example-3.0.0.jar
+```
+
+Call a secured endpoint and you will get a 401 response:
+
+```bash
+curl -i http://localhost:9090/api/products
+```
+
+## Test the API
+
+While the API is running, use maven to run JUnit integration tests:
+
+```bash
+mvn test
+```
+
+The test results are then output to the console and would be run frequently for a real API:
+
+```text
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Results:
+[INFO] Tests run: 25, Failures: 0, Errors: 0, Skipped: 0
+```
 
 ## More Information
 

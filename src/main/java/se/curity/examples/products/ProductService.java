@@ -15,8 +15,6 @@
  */
 package se.curity.examples.products;
 
-import se.curity.examples.products.Product;
-
 import java.util.Collection;
 
 /**

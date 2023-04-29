@@ -15,13 +15,13 @@
  */
 package se.curity.examples.products;
 
-import io.curity.oauth.AuthenticatedUser;
-import io.curity.oauth.OAuthFilter;
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.MalformedClaimException;
 import se.curity.examples.exceptions.AuthorizationException;
 import se.curity.examples.exceptions.NotFoundException;
+import se.curity.examples.spark.OAuthFilter;
 import spark.Request;
 import spark.Response;
-
 import javax.json.Json;
 import javax.json.JsonObject;
 
@@ -54,20 +54,21 @@ public class GetProductRequestHandler extends ProductRequestHandler {
 
         String subscriptionLevel;
         String countryCode;
-        try {
-            countryCode = ((AuthenticatedUser)request.attribute(OAuthFilter.PRINCIPAL_ATTRIBUTE_NAME))
-                    .getClaims().getString(CLAIM_NAME_COUNTRY);
+        JwtClaims claimsPrincipal = request.attribute(OAuthFilter.CLAIMS_PRINCIPAL);
 
-        } catch (NullPointerException | ClassCastException invalidClaim) {
+        try {
+
+            countryCode = claimsPrincipal.getStringClaimValue(CLAIM_NAME_COUNTRY);
+
+        } catch (MalformedClaimException invalidClaim) {
             // User is not authorized to view any products
             throw new AuthorizationException();
         }
 
         try {
-            subscriptionLevel = ((AuthenticatedUser)request.attribute(OAuthFilter.PRINCIPAL_ATTRIBUTE_NAME))
-                           .getClaims().getString(CLAIM_NAME_SUBSCRIPTION_LEVEL);
+            subscriptionLevel = claimsPrincipal.getStringClaimValue(CLAIM_NAME_SUBSCRIPTION_LEVEL);
 
-        } catch (NullPointerException | ClassCastException invalidClaim) {
+        } catch (MalformedClaimException invalidClaim) {
             // Something is wrong with the subscription. Deny access.
             throw new AuthorizationException("Invalid subscription");
         }

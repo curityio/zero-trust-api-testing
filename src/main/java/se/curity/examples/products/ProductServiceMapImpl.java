@@ -49,11 +49,11 @@ public class ProductServiceMapImpl implements ProductService {
 
     private ConcurrentHashMap<String, Product> createProductList() {
         ConcurrentHashMap<String, Product> productList = new ConcurrentHashMap<>();
-        productList.put("1", new Product("1", "T-Shirt", "Pretty nice t-shirt", List.of("se", "us")));
-        productList.put("2", new Product("2", "T-Shirt", "Awesome t-shirt", List.of("us"), true));
-        productList.put("3", new Product("3", "Pants", "Just some pants", List.of("se")));
-        productList.put("4", new Product("4", "T-Shirt", "Basic t-shirt", List.of("de")));
-        productList.put("5", new Product("5", "Pants", "A pair of pants", List.of("de"), true));
+        productList.put("1", new Product("1", "Wireless Keyboard", "Wireless keyboard with multimedia hotkeys, comfortable design with a good typing experience. Works for Windows, MacOS and Linux.", List.of("se", "us")));
+        productList.put("2", new Product("2", "Wireless On-Ear Headphones", "High-performance bluetooth headphones with soft ear cups and long battery life. Works with iOS and Android devices.", List.of("us"), true));
+        productList.put("3", new Product("3", "Screen Protector", "Extra thin and seamless layer to protect the screen of the phone. Does not fit for every phone. ", List.of("se")));
+        productList.put("4", new Product("4", "Screen Protector and Privacy Filter 2 in 1", "Extra thin and seamless layer that protects the screen of the phone from scratches. The built-in filter prevents shoulder surfing.", List.of("de")));
+        productList.put("5", new Product("5", "Fitness and Health Tracker", "Lightweight accessory for the health conscious. It can monitor skin temperature and heartbeat.", List.of("se"), true));
         return productList;
     }
 }

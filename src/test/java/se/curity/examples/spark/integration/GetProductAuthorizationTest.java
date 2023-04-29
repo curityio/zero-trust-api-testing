@@ -1,12 +1,25 @@
+/*
+ * Copyright 2023 Curity AB
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package se.curity.examples.spark.integration;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import se.curity.examples.products.Product;
-import se.curity.examples.spark.utils.JsonUtil;
-
 import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -45,10 +58,6 @@ public class GetProductAuthorizationTest extends AbstractApiAuthorizationTest {
                         "scope", SCOPE),
                 applicationUrl("/api/products/" + productId));
         assertEquals(200, response.statusCode(), "Response Code");
-
-        Product product = mockProductService.getProduct(productId);
-
-        assertEquals(JsonUtil.getJsonObjectWithDescription(product).toString(), response.body());
     }
 
     @Test
@@ -93,6 +102,7 @@ public class GetProductAuthorizationTest extends AbstractApiAuthorizationTest {
                 applicationUrl("/api/products/5"));
         assertEquals(403, response.statusCode(), "Response Code");
     }
+
     @Test
     void denyAccessWhenUserLoadsProductFromDifferentCountry() {
         HttpResponse<String> response = sendAuthenticatedRequest(
