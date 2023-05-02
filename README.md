@@ -58,7 +58,7 @@ mvn test
 ```
 
 Tests spin up a keypair and use the private key to issue JWT access tokens for testing.\
-Wiremock is used to expose the JSON Web KeySet at http://localhost:8443/oauth/v2/oauth-anonymous/jwks.\
+Wiremock is used to expose the JSON Web KeySet at http://localhost:8443/oauth/v2/oauth-anonymous/jwks. \
 The running API therefore trusts tokens received.\
 The test results are output to the console and would be run frequently for a real API:
 
