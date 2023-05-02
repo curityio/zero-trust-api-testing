@@ -92,7 +92,7 @@ public class OAuthFilter implements Filter {
                 return;
             }
 
-            _logger.info("The request passed JWT validation");
+            _logger.debug("The request passed JWT validation");
             request.setAttribute(CLAIMS_PRINCIPAL, jwtClaims);
 
             if (filterChain != null) {
