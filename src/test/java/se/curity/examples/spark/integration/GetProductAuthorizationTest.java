@@ -20,6 +20,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import se.curity.examples.products.Product;
+import se.curity.examples.products.ProductServiceMapImpl;
+import se.curity.examples.spark.utils.JsonUtil;
+
 import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -58,6 +62,9 @@ public class GetProductAuthorizationTest extends AbstractApiAuthorizationTest {
                         "scope", SCOPE),
                 applicationUrl("/api/products/" + productId));
         assertEquals(200, response.statusCode(), "Response Code");
+
+        Product product = new ProductServiceMapImpl().getProduct(productId);
+        assertEquals(JsonUtil.getJsonObjectWithDescription(product).toString(), response.body());
     }
 
     @Test

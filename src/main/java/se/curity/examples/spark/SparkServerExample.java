@@ -85,5 +85,4 @@ public class SparkServerExample implements SparkApplication
         ServerOptions options = new ServerOptions(args);
         new SparkServerExample(new ProductServiceMapImpl(), options);
     }
-
 }

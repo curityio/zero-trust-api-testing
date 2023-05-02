@@ -46,6 +46,12 @@ public class ProductServiceMapImpl implements ProductService {
         return productMap.containsKey(id);
     }
 
+    public Collection<Product> getProductsForCountry(String country) {
+        return productMap.values()
+                .stream()
+                .filter(product -> product.getAuthorizedCountries().contains(country))
+                .toList();
+    }
 
     private ConcurrentHashMap<String, Product> createProductList() {
         ConcurrentHashMap<String, Product> productList = new ConcurrentHashMap<>();
