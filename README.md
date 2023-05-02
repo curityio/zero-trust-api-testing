@@ -72,7 +72,7 @@ The test results are output to the console and would be run frequently for a rea
 
 ## More Information
 
-For more information about the Curity Identity Server, please contact [Curity](https://curity.io). 
+For more information about the Curity Identity Server, please contact [Curity](https://curity.io). \
 You can find more examples, tutorials and articles in [Curity's Resource Library](https://curity.io/resources). 
 
 Copyright 2023 Curity AB
