@@ -36,7 +36,7 @@ Then run the following command to build the API code into a single JAR file:
 mvn package -DskipTests
 ```
 
-This will create a JAR file in the `target` directory and the API can be run like this.
+This will create a JAR file in the `target` directory and the API can be run with this command.\
 The running API points to a JWKS URI at http://localhost:8443/oauth/v2/oauth-anonymous/jwks.
 
 ```bash
@@ -57,9 +57,9 @@ While the API is running, use maven to run JUnit integration tests:
 mvn test
 ```
 
-Tests spin up a keypair and use the private key to issue JWT access tokens for testing.
-Wiremock is used to expose the JSON Web KeySet at http://localhost:8443/oauth/v2/oauth-anonymous/jwks.
-The running API therefore trusts tokens received.  
+Tests spin up a keypair and use the private key to issue JWT access tokens for testing.\
+Wiremock is used to expose the JSON Web KeySet at http://localhost:8443/oauth/v2/oauth-anonymous/jwks.\
+The running API therefore trusts tokens received.\
 The test results are output to the console and would be run frequently for a real API:
 
 ```text
