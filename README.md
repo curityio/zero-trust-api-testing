@@ -4,7 +4,7 @@ A simple Java REST API implemented using [Spark Java](http://sparkjava.com).\
 The API uses an OAuth filter to implement its JWT validation on every request.\
 The API then uses claims to implement its business  authorization.
 
-The API's integration tests use a JWT library to create a keypair.\
+The API's integration tests use a JOSE library to create JSON Web Keys.\
 This enables the tests to productively issue mock access tokens as any user.\
 A JWKS endpoint is spun up to expose the mock token signing public key.
 
@@ -57,8 +57,8 @@ While the API is running, use maven to run JUnit integration tests:
 mvn test
 ```
 
-Tests spin up a keypair and use the private key to issue JWT access tokens for testing.\
-Wiremock is used to expose the JSON Web KeySet at http://localhost:8443/oauth/v2/oauth-anonymous/jwks. \
+Tests spin up JSON Web Keys and use the private key to issue JWT access tokens for testing.\
+Wiremock is used to expose the JSON Web Key Set at http://localhost:8443/oauth/v2/oauth-anonymous/jwks. \
 The running API therefore trusts tokens received.\
 The test results are output to the console and would be run frequently for a real API:
 

@@ -16,6 +16,8 @@
 package se.curity.examples.spark;
 
 import javax.annotation.Nullable;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Options that can be passed on to the @SparkServerExample
@@ -30,7 +32,7 @@ public class ServerOptions {
     /**
      * --jwksurl: the URL where the JSON Web Key Set can be found. This key set contains the key to verify the signature of JWTs.
      */
-    private String jwksUrl;
+    private URL jwksUrl;
 
     /**
      * --issuer: the expected value of the 'iss' claim in the JWT. This value is used during JWT validation.
@@ -58,7 +60,15 @@ public class ServerOptions {
      * @return the string representation of the JWKS URL.
      */
     public String getJwksUrl() {
-        return this.jwksUrl;
+        return this.jwksUrl.toString();
+    }
+
+    public void setJwksUrl(String url) {
+        try {
+            this.jwksUrl = new URL(url);
+        } catch (MalformedURLException exception) {
+            throw new IllegalArgumentException(String.format("Invalid value for JWKS URL: %s", exception.getMessage()), exception);
+        }
     }
 
     /**
@@ -91,7 +101,7 @@ public class ServerOptions {
         this.port = 9090;
         this.issuer = "http://localhost:8443/oauth/v2/oauth-anonymous";
         this.audience = "api.example.com";
-        this.jwksUrl = "http://localhost:8443/oauth/v2/oauth-anonymous/jwks";
+        this.setJwksUrl("http://localhost:8443/oauth/v2/oauth-anonymous/jwks");
         this.scope = "products";
     }
 
@@ -123,7 +133,8 @@ public class ServerOptions {
 
                 switch (argumentName) {
                     case "--jwksurl" -> {
-                        this.jwksUrl = argumentValue;
+                        
+                        this.setJwksUrl(argumentValue);
                     }
                     case "--issuer" -> this.issuer = argumentValue;
                     case "--port" -> {
@@ -140,5 +151,4 @@ public class ServerOptions {
             }
         }
     }
-
 }

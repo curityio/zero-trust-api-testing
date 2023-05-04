@@ -65,7 +65,7 @@ public abstract class AbstractApiAuthorizationTest {
         }
 
         started = true;
-        var options = new WireMockConfiguration().port(8443).httpDisabled(false);
+        var options = new WireMockConfiguration().port(8443);
         mockAuthorizationServer = new WireMockServer(options);
         mockAuthorizationServer.start();
 
