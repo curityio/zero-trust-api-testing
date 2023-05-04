@@ -29,14 +29,14 @@ Have a look at `se/curity/examples/products/ProductServiceMapImpl.java` for the 
 
 ## Run the API
 
-To build this project, ensure that JDK 17 or above are installed, and also Maven.\
-Then run the following command to build the API code into a single JAR file:
+To build this project, ensure that JDK 17 or above, and the Maven build tool, are both installed.\
+Then run the following command to build the API code into a single JAR file in the `target` folder:
 
 ```bash
 mvn package -DskipTests
 ```
 
-This will create a JAR file in the `target` directory and the API can be run with this command.\
+The API can then be run with this command.\
 The running API points to a JWKS URI at http://localhost:8443/oauth/v2/oauth-anonymous/jwks.
 
 ```bash
@@ -57,7 +57,7 @@ While the API is running, use maven to run JUnit integration tests:
 mvn test
 ```
 
-Tests spin up JSON Web Keys and use the private key to issue JWT access tokens for testing.\
+Integration tests create JSON Web Keys and use the private key to issue JWT access tokens for testing.\
 Wiremock is used to expose the JSON Web Key Set at http://localhost:8443/oauth/v2/oauth-anonymous/jwks. \
 The running API therefore trusts tokens received.\
 The test results are output to the console and would be run frequently for a real API:
