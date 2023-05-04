@@ -1,17 +1,26 @@
+/*
+ * Copyright 2023 Curity AB
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package se.curity.examples.spark.integration;
 
-import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
-import org.junit.jupiter.api.AfterAll;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.RegisterExtension;
-import se.curity.examples.spark.ServerOptions;
-import se.curity.examples.spark.SparkServerExample;
 import se.curity.examples.spark.mock.MockJwtIssuer;
-import se.curity.examples.spark.mock.MockProductServiceImpl;
-import spark.Spark;
-
 import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -23,65 +32,50 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 public abstract class AbstractApiAuthorizationTest {
 
-    static final String ISSUER = "jwtIssuer";
-    static final String AUDIENCE = "someClientId";
+    static final String ISSUER = "http://localhost:8443/oauth/v2/oauth-anonymous";
+    static final String AUDIENCE = "api.example.com";
+    static final String JWKS_PATH = "/oauth/v2/oauth-anonymous/jwks";
     static final String SCOPE = "products";
     static final int PORT = 9090;
 
-    static MockProductServiceImpl mockProductService;
-    static boolean applicationStarted;
+    private static boolean started = false;
 
     /**
-     * Creates JWTs for the given issuer and key
+     * Creates JWTs for the given issuer and a generated key ID
      */
-    static MockJwtIssuer mockJwtIssuer = new MockJwtIssuer(ISSUER, "key1");
+    static MockJwtIssuer mockJwtIssuer = new MockJwtIssuer(ISSUER, UUID.randomUUID().toString());
     /**
      * Used to mock JWKS endpoint for mocked JWT issuer
      */
-    @RegisterExtension
-    static WireMockExtension wm1 = WireMockExtension.newInstance()
-            .options(wireMockConfig().httpDisabled(true).httpsPort(8443))
-            .build();
+    static WireMockServer mockAuthorizationServer;
 
     @BeforeAll
-    static synchronized void startApplication() throws ServletException {
-        String jwksUrl = wm1.baseUrl() + "/jwks";
-        Logger.getLogger(AbstractApiAuthorizationTest.class.getName()).info("Mocked JWKS URL on " + jwksUrl);
+    public static void startMockAuthorizationServer() throws ServletException {
 
-        ServerOptions options = new ServerOptions();
-        options.setPort(PORT);
-        options.setJwksUrl(jwksUrl);
-        options.setIssuer(ISSUER);
-        options.setAudience(AUDIENCE);
-        options.setScope(SCOPE);
-
-        if (!applicationStarted) {
-            mockProductService = new MockProductServiceImpl();;
-            SparkServerExample.runLocally(mockProductService, options);
-            applicationStarted = true;
+        if (started) {
+            return;
         }
-    }
 
-    @BeforeEach
-    void publishJwks() {
-        wm1.stubFor(get("/jwks")
+        started = true;
+        var options = new WireMockConfiguration().port(8443);
+        mockAuthorizationServer = new WireMockServer(options);
+        mockAuthorizationServer.start();
+
+        String jwksUrl = mockAuthorizationServer.baseUrl() + JWKS_PATH;
+        Logger.getLogger(AbstractApiAuthorizationTest.class.getName()).info("Mocked JWKS URL on " + jwksUrl);
+        mockAuthorizationServer.stubFor(get(JWKS_PATH)
                 .willReturn(
                         ok(mockJwtIssuer.getJwks())
                 )
         );
-    }
-
-    @AfterAll
-    static synchronized void stopApplication() {
-        Spark.awaitStop();
     }
 
     /**

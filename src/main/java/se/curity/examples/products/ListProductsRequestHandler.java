@@ -15,11 +15,11 @@
  */
 package se.curity.examples.products;
 
-import io.curity.oauth.AuthenticatedUser;
-import io.curity.oauth.OAuthFilter;
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.MalformedClaimException;
+import se.curity.examples.spark.OAuthFilter;
 import spark.Request;
 import spark.Response;
-
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
@@ -35,12 +35,13 @@ public class ListProductsRequestHandler extends ProductRequestHandler {
 
     @Override
     public Object handle(Request request, Response response) {
+
         try {
-            // Get the country claim from the user principal
-            String countryCode = ((AuthenticatedUser)request.attribute(OAuthFilter.PRINCIPAL_ATTRIBUTE_NAME))
-                    .getClaims().getString(CLAIM_NAME_COUNTRY);
+            JwtClaims claimsPrincipal = request.attribute(OAuthFilter.CLAIMS_PRINCIPAL);
+            String countryCode = claimsPrincipal.getStringClaimValue(CLAIM_NAME_COUNTRY);
             return getProducts(countryCode);
-        } catch (NullPointerException | ClassCastException exception) {
+
+        } catch (MalformedClaimException exception) {
             // There's an error with the country claim. Return empty list.
             return "[]";
         }

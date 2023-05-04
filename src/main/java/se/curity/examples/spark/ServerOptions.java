@@ -55,32 +55,13 @@ public class ServerOptions {
      */
     public int getPort() { return port; }
 
-    public void setPort(int port) { if(port > 0) this.port = port;}
-
     /**
-     * Get the port of the JWKS URL
-     * @return the string representation of the port in the JWKS URL.
+     * Get the JWKS URL
+     * @return the string representation of the JWKS URL.
      */
-    public String getJwksPort() {
-        if (jwksUrl.getPort() == -1) {
-            // No custom port defined. Return default.
-            return "" + jwksUrl.getDefaultPort();
-        } else {
-            return "" + jwksUrl.getPort();
-        }
+    public String getJwksUrl() {
+        return this.jwksUrl.toString();
     }
-
-    /**
-     * Get the host name of the JWKS URL
-     * @return the host name of the JWKS URL
-     */
-    public String getJwksHost() { return jwksUrl.getHost(); }
-
-    /**
-     * Get the path part of the JWKS URL
-     * @return the path part of this URL, or an empty string if one does not exist
-     */
-    public String getJwksPath() { return jwksUrl.getPath(); }
 
     public void setJwksUrl(String url) {
         try {
@@ -96,41 +77,32 @@ public class ServerOptions {
      */
     public String getIssuer() { return issuer; }
 
-    public void setIssuer(String issuer) { this.issuer = issuer; }
-
     /**
      * Get the configured expected audience of the JWT ('aud' claim)
      * @return the expected value of the JWT audience
      */
     public String getAudience() { return audience; }
 
-    public void setAudience(String audience) { this.audience = audience; }
     /**
      * Get the configured required scopes for a JWT to be valid
      * @return the configured scope value that the server will accept.
      */
     public String getScope() { return scope; }
 
-    public void setScope(String scope) { this.scope = scope; }
-
     /**
      * Create default options:
      * port: 9090 <br/>
-     * issuer: https://localhost:8443/oauth/v2/oauth-anonymous <br/>
+     * issuer: http://localhost:8443/oauth/v2/oauth-anonymous <br/>
      * audience: www <br/>
+     * jwksurl: http://localhost:8443/oauth/v2/oauth-anonymous/jwks
      * scope: read <br/>
-     * jwksurl: https://localhost:8443/oauth/v2/oauth-anonymous/jwks
      */
     public ServerOptions() {
         this.port = 9090;
-        this.issuer = "https://localhost:8443/oauth/v2/oauth-anonymous";
-        this.audience = "www";
-        this.scope = "read";
-        try {
-            this.jwksUrl = new URL("https", "localhost", 8443, "/oauth/v2/oauth-anonymous/jwks");
-        } catch (MalformedURLException exception) {
-            // not going to happen because values are hardcoded.
-        }
+        this.issuer = "http://localhost:8443/oauth/v2/oauth-anonymous";
+        this.audience = "api.example.com";
+        this.setJwksUrl("http://localhost:8443/oauth/v2/oauth-anonymous/jwks");
+        this.scope = "products";
     }
 
     /**
@@ -161,11 +133,8 @@ public class ServerOptions {
 
                 switch (argumentName) {
                     case "--jwksurl" -> {
-                        try {
-                            this.jwksUrl = new URL(argumentValue);
-                        } catch (MalformedURLException exception) {
-                            throw new IllegalArgumentException(String.format("Invalid value for JWKS URL: %s", exception.getMessage()));
-                        }
+                        
+                        this.setJwksUrl(argumentValue);
                     }
                     case "--issuer" -> this.issuer = argumentValue;
                     case "--port" -> {
@@ -182,5 +151,4 @@ public class ServerOptions {
             }
         }
     }
-
 }

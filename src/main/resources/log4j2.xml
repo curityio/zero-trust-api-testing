@@ -27,6 +27,6 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="se.curity" level="TRACE"/>
+        <Logger name="se.curity" level="DEBUG"/>
     </Loggers>
 </Configuration>

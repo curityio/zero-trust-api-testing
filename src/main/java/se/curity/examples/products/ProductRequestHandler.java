@@ -18,7 +18,6 @@ package se.curity.examples.products;
 import se.curity.examples.exceptions.AuthorizationException;
 import se.curity.examples.exceptions.NotFoundException;
 import spark.Route;
-
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;

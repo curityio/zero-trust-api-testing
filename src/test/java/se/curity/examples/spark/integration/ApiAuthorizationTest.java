@@ -18,7 +18,6 @@ package se.curity.examples.spark.integration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
 import java.net.http.HttpResponse;
 import java.util.Map;
 
