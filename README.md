@@ -1,5 +1,8 @@
 # OAuth Zero Trust API Testing
 
+[![Quality](https://img.shields.io/badge/quality-demo-red)](https://curity.io/resources/code-examples/status/)
+[![Availability](https://img.shields.io/badge/availability-source-blue)](https://curity.io/resources/code-examples/status/)
+
 A simple Java REST API implemented using [Spark Java](http://sparkjava.com).\
 The API uses an OAuth filter to implement its JWT validation on every request.\
 The API then uses claims to implement its business  authorization.
